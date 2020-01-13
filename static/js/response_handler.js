@@ -400,13 +400,11 @@ responseHandlerGenerator = function (action_mapping) {
                 );
 
             } else {
-                var text_display = 'Which goal is the best?<span style="font-size:150%"></span><br>' +
+                var text_display =
                     '<span style="color:' + this.painter.AGENT_COLORS['agent1'] +'">' +
-                    // '<span style="text-shadow: 2px 2px #ff0000">'
                     '<span style="font-size:150%"><span style="font-weight: bold">' +
-                    'Room '+ this.context + '</span></span></span>' +
-                    // '</span>' +
-                    '<br> ' +
+                    'Room '+ this.context + '</span></span></span>' + '<br> ' +
+                    'Which goal is the best?<span style="font-size:150%"></span><br>' +
                     '<span style="color: #707070"><span style="font-style: italic">Use the <b>a</b>, <b>s</b>,' +
                     ' <b>d</b>, <b>f</b>, and <b>j</b>, <b>k</b>, <b>l</b>, <b>;</b> keys to move.</span></span>';
 

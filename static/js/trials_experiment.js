@@ -493,11 +493,13 @@ while (context_queue.length > 0) {
         ctx, // context number
         [contexts[ctx].color], // agent color
         contexts[ctx].response_handler, //response handler
-        //initial text, display id, message id
-        'Which goal is the best?<span style="font-size:150%"></span><br><span style="font-size:150%">' +
-        '<span style="font-weight: bold"> </span></span><br><span style="color: #707070">' +
-        '<span style="font-style: italic"> Use the <b>a</b>, <b>s</b>, <b>d</b>, <b>f</b>, and <b>j</b>, <b>k</b>, ' +
-        '<b>l</b>, <b>;</b> keys to move.</span></span>',
+        //initial text, display id, message id'
+        '<span style="color:' + contexts[ctx].color +'">' +
+        '<span style="font-size:150%"><span style="font-weight: bold">' +
+        'Room '+ ctx + '</span></span></span>' + '<br> ' +
+        'Which goal is the best?<span style="font-size:150%"></span><br>' +
+        '<span style="color: #707070"><span style="font-style: italic">Use the <b>a</b>, <b>s</b>,' +
+        ' <b>d</b>, <b>f</b>, and <b>j</b>, <b>k</b>, <b>l</b>, <b>;</b> keys to move.</span></span>',
         '#task_display',
         '#trial_text'
     );
