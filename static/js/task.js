@@ -13,13 +13,14 @@ var psiTurk = new PsiTurk(uniqueId, adServerLoc, mode);
 // All pages to be loaded
 var pages = [
     "instructions/instruct-tutorial.html",
-    "instructions/instruct-tutorial2.html",
+    "instructions/instruct-welcome.html",
     "instructions/instruct-endtutorial.html",
     "instructions/instruct-experiment1.html",
     "instructions/instruct-experiment2.html",
     "instructions/instruct-experiment3.html",
     "stage.html",
     "questionnaires/questionnaire-task.html",
+    "questionnaires/questionnaire-aq.html",
     "questionnaires/questionnaire-demographics.html",
     "questionnaires/questionnaire-instructions.html",
     "feedback/feedback-experiment.html"
@@ -27,9 +28,12 @@ var pages = [
 
 psiTurk.preloadPages(pages);
 
+var instructionsWelcome = [
+    "instructions/instruct-welcome.html"
+]
+
 var instructionsTutorial = [
     "instructions/instruct-tutorial.html",
-    "instructions/instruct-tutorial2.html"
 ];
 
 var instructionsExperiment = [
@@ -270,7 +274,7 @@ var RewardFeedback_experiment = function() {
 
 
     $("#next").click(function () {
-        current_view = new DemographicsQuestionnaire();
+        current_view = new TaskQuestionnaire();
 
     });
 
@@ -358,6 +362,62 @@ var InstructionsQuestionnaire = function() {
 
 };
 
+var aqQuestionnaire = function() {
+
+    // Add error message?
+    var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. This might happen if you " +
+    "lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
+
+    record_responses = function() {
+
+        psiTurk.recordTrialData({'phase':'questionnaire-demographics', 'status':'submit'});
+
+        $('textarea').each( function(i, val) {
+            psiTurk.recordUnstructuredData(this.id, this.value);
+        });
+        $('select').each( function(i, val) {
+            psiTurk.recordUnstructuredData(this.id, this.value);
+        });
+
+    };
+
+    prompt_resubmit = function() {
+        replaceBody(error_message);
+        $("#resubmit").click(resubmit);
+    };
+
+    resubmit = function() {
+        replaceBody("<h1>Trying to resubmit...</h1>");
+        reprompt = setTimeout(prompt_resubmit, 10000);
+        
+        psiTurk.saveData({
+            success: function() {
+                clearInterval(reprompt);
+                current_view = TaskQuestionnaire();
+            }, 
+            error: prompt_resubmit
+        });
+    };
+
+    // Load the questionnaire snippet 
+    psiTurk.showPage('questionnaires/questionnaire-aq.html');
+    psiTurk.recordTrialData({'phase':'questionnaire-aq', 'status':'begin'});
+    
+    $("#next").click(function () {
+        record_responses();
+        psiTurk.saveData({
+            success: function(){
+                psiTurk.doInstructions(
+                    instructionsTutorial,
+                    function() { current_view = new Tutorial(); } // what you want to do when you are done with the questionnaire
+                )
+            }, 
+            error: prompt_resubmit});
+    });
+
+}
+
+
 var DemographicsQuestionnaire = function() {
 
     var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. This might happen if you " +
@@ -406,7 +466,7 @@ var DemographicsQuestionnaire = function() {
         record_responses();
         psiTurk.saveData({
             success: function(){
-                current_view = TaskQuestionnaire();
+                current_view = aqQuestionnaire();
             }, 
             error: prompt_resubmit});
     });
@@ -493,8 +553,8 @@ var start_time = new Date().getTime();
  ******************/
 $(window).load( function(){
     psiTurk.doInstructions(
-        instructionsTutorial,
-        function() { current_view = new Tutorial(); } // what you want to do when you are done with instructions
+        instructionsWelcome,
+        function() { current_view = new DemographicsQuestionnaire(); } // what you want to do when you are done with instructions
         // instructionsGeneralization,
         // function() {current_view = new Generalization()}
         // function () { current_view = new InstructionsQuestionnaire() };
