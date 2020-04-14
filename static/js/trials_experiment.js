@@ -63,9 +63,11 @@ function shuffle_keys() {
 }
 var goal_display_label_key = shuffle_keys();
 
-// var n_ctx = contexts.length;
 var balance = [5, 5, 10, 20, 20];  // this number is doubled
 var test_balance = [10, 10, 5, 5];
+// for debugging, we a much smaller number of trials
+// var balance = [1, 1, 2, 4, 4];
+// var test_balance = [2, 2, 1, 1];
 var trial_tile_size = 70;
 
 /* New! Randomization Algorithm */

@@ -21,7 +21,7 @@ demo_responseHandlerGenerator = function (action_mapping) {
             response = 'wait';
         }
 
-        var rt = new Date().getTime() - trial_on; // record the reaction time.
+        // var rt = new Date().getTime() - trial_on; // record the reaction time.
 
         //////
         var agentActions = {};

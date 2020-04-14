@@ -370,7 +370,7 @@ var aqQuestionnaire = function() {
 
     record_responses = function() {
 
-        psiTurk.recordTrialData({'phase':'questionnaire-demographics', 'status':'submit'});
+        psiTurk.recordTrialData({'phase':'questionnaire-aq', 'status':'submit'});
 
         $('textarea').each( function(i, val) {
             psiTurk.recordUnstructuredData(this.id, this.value);
@@ -507,7 +507,7 @@ var TaskQuestionnaire = function() {
         psiTurk.saveData({
             success: function(){
                 clearInterval(reprompt);
-                psiTurk.computeBonus('./compute_bonus', function(){finish()})
+                psiTurk.computeBonus('compute_bonus', function(){finish()})
             },
             error: prompt_resubmit
         });
@@ -522,7 +522,7 @@ var TaskQuestionnaire = function() {
         record_responses();
         psiTurk.saveData({
             success: function(){
-                psiTurk.computeBonus('./compute_bonus', function(){finish()})
+                psiTurk.computeBonus('compute_bonus', function(){finish()})
             },
             error: prompt_resubmit
         });
