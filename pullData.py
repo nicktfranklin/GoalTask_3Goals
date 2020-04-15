@@ -6,10 +6,10 @@ import pdb
 #Edited by Guillaume and Dan on 1/26/2018, should work now
 #This version was moved to psiturk/Andrew
 #This creates a csv file named 'ramp'. Change at line 67 if you want it to be named something else. Will deposit in w/e directory this is in.
-def main(table_name):
+def main(table_name, database_name = "participants.db"):
 
     ##### ~~~~~ BEGIN Interact with SQL database #######
-    db_url = "sqlite:///participants.db"
+    db_url = "sqlite:///" + database_name
     data_column_name = 'datastring'
     print(db_url)
 
@@ -45,7 +45,7 @@ def main(table_name):
         _q['assignmentId'] = json.loads(part)['assignmentId']
         _q['workerId'] = json.loads(part)['workerId']
         _q['hitId'] = json.loads(part)['hitId']
-        _q['bonud'] = json.loads(part)['bonus']
+        _q['bonus'] = json.loads(part)['bonus']
         question_data.append(_q)
 
     ### N.B. we can also get the event data (i.e. screen resizing) via json.loads(part)['eventdata]
@@ -84,11 +84,14 @@ def save_json(data, filename, permisions='w'):
         json.dump(data, f)
 
 if __name__ == "__main__":
+
+    tag = '_test'
+
     #import sys
     table_name = "maze_task"
-    trial_data, question_data = main(table_name)
+    trial_data, question_data = main(table_name, 'participants{}.db'.format(tag))
 
     # save the data as seperate json files
-    save_json(trial_data, 'maze_task.json', 'w') 
+    save_json(trial_data, 'maze_task{}.json'.format(tag), 'w')
 
-    save_json(question_data, 'maze_task_q.json', 'w') 
+    save_json(question_data, 'maze_task_q{}.json'.format(tag), 'w')
