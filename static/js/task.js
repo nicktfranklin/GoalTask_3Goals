@@ -155,6 +155,9 @@ var Tutorial = function() {
 var total_points = 0;
 var trial_number;
 var times_seen_context = {};
+var reprompt;
+var prompt_resubmit;
+var resubmit;
 var Experiment = function() {
 
     trial_number = -1;
@@ -257,8 +260,37 @@ var Experiment = function() {
                 'Total Points': total_points
             });
 
-        psiTurk.saveData();
-        current_view = new RewardFeedback_experiment();
+
+        // add error handeling...
+        // psiTurk.saveData();
+        // current_view = new RewardFeedback_experiment();
+        var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. This might happen if you " +
+            "lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
+        
+        prompt_resubmit = function() {
+            replaceBody(error_message);
+            $("#resubmit").click(resubmit);
+        };
+    
+        resubmit = function() {
+            replaceBody("<h1>Trying to resubmit...</h1>");
+            reprompt = setTimeout(prompt_resubmit, 10000);
+            
+            psiTurk.saveData({
+                success: function() {
+                    clearInterval(reprompt);
+                    current_view = new RewardFeedback_experiment();
+                }, 
+                error: prompt_resubmit
+            });
+        };        
+
+        psiTurk.saveData({
+            success: function(){
+                current_view = new RewardFeedback_experiment();
+            }, 
+            error: prompt_resubmit}
+        );
     };
 
     init();
@@ -287,10 +319,10 @@ var RewardFeedback_experiment = function() {
 /****************
 * Questionnaire *
 ****************/
-var reprompt;
 var record_responses;
-var prompt_resubmit;
-var resubmit;
+// var reprompt;
+// var prompt_resubmit;
+// var resubmit;
 var savedata;
 var finish;
 var InstructionsQuestionnaire = function() {
@@ -393,7 +425,7 @@ var aqQuestionnaire = function() {
         psiTurk.saveData({
             success: function() {
                 clearInterval(reprompt);
-                current_view = TaskQuestionnaire();
+                current_view = new Tutorial();
             }, 
             error: prompt_resubmit
         });
@@ -452,7 +484,7 @@ var DemographicsQuestionnaire = function() {
         psiTurk.saveData({
             success: function() {
                 clearInterval(reprompt);
-                current_view = TaskQuestionnaire();
+                current_view = aqQuestionnaire();
             }, 
             error: prompt_resubmit
         });
